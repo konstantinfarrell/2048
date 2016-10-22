@@ -7,6 +7,19 @@
     position: absolute;
 }
 
+#tile-container {
+    width: 500px;
+    height: 500px;
+    position: absolute;
+}
+
 .grid {
     border: 3px solid #999;
+}
+
+.tile {
+    border-radius: 3px;
+    position: absolute;
+    font-size: 48px;
+    color: #ddd;
 }
