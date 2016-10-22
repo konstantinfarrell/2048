@@ -8,6 +8,18 @@ $(document).ready(function(){
         [0, 0, 0, 0]
     ];
 
+    var TILES = [];
+    for(i = 0; i < 16; i++){
+        TILES[i] = {
+            position: [-1, -1],
+            value: 0,
+            color: '#ffffff',
+            free: true
+        };
+    }
+    console.log(TILES);
+
+
     // Place the grid container
     var middle = $(window).width()/2;
     var push = middle - $('#main-container').width()/2;
@@ -23,6 +35,14 @@ $(document).ready(function(){
             $(row).append(grid);
             $('.grid').css({'width': tile_size, 'height': tile_size});
         }
+    }
+
+    // merge tile1 into tile2.
+    // combines their values.
+    // tile1 becomes free and is
+    // removed from the grid.
+    function merge(tile1, tile2){
+
     }
 
     // Gets a tile object based on the given
