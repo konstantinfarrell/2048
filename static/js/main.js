@@ -39,6 +39,8 @@ $(document).ready(function(){
         };
     }
 
+    var moving = false;
+
     // Place the grid container
     var middle = $(window).width()/2;
     var push = middle - $('#main-container').width()/2;
@@ -62,28 +64,61 @@ $(document).ready(function(){
     // tile1 becomes free and is
     // removed from the grid.
     function merge(tile1, tile2){
-
+        
     }
 
     // Gets a tile object based on the given
     // position.
     // returns false if no tile is available.
     function getTileFromPosition(position){
-
+        for(i = 0; i < 16; i++){
+            if(TILES[i].position == position){
+                return TILES[i];
+            }
+        }
+        return false;
     }
 
     // Moves all tiles in a specified direction
     // returns false if all tiles are unable to move
     // in the specified direction.
-    function move(direction){
-
-    }
+    var move = function(direction){
+        moving = true;
+        var can_move = 16;
+        while(can_move){
+            can_move = 16;
+            for(i = 0; i < 16; i++){
+                if(!moveTile(i, TILES[i].position, direction)){
+                    can_move--;
+                }
+            }
+        }
+        moving = false;
+        if(!can_move){
+            return true;
+        }
+    };
 
     // Moves the tile at the given position
     // one space in the given direction.
     // returns false if unable to move.
-    function moveTile(position, direction){
-        
+    function moveTile(tile, position, direction){
+        var new_position = [position[0] + direction[0], position[1] + direction[1]];
+        var new_coordinates = getCoordinates(new_position);
+        if(isEmpty(new_position)){
+            GRID[TILES[tile].position[0]][TILES[tile].position[1]] = 0;
+            TILES[tile].position = new_position;
+            TILES[tile].coordinates = new_coordinates;
+            GRID[new_position[0]][new_position[1]] = TILES[tile];
+            return $(TILES[tile].id).animate({
+                'margin-left': new_coordinates[0] + 4 + "px",
+                'margin-top': new_coordinates[1] + 4 + "px"
+            }, 125).promise().done(function(){
+                return true;
+            });
+        } else {
+            return false;
+        }
     }
 
     // Attempt to add a tile.
@@ -166,9 +201,13 @@ $(document).ready(function(){
     function isEmpty(coords){
         var row = coords[0];
         var col = coords[1];
-        if(GRID[row][col] == 0){
-            return true;
-        } else {
+        try {
+            if(GRID[row][col] == 0){
+                return true;
+            } else {
+                return false;
+            }
+        } catch(TypeError){
             return false;
         }
     }
@@ -185,24 +224,47 @@ $(document).ready(function(){
         return true;
     }
 
+    function addTilesAfterTurn(){
+        if(moving == true){
+            setTimeout(addTilesAfterTurn(), 250);
+        } else {
+            addTile();
+            addTile();
+        }
+    }
+
     $(document).keydown(function(e){
         var key = e.which;
 
         var keyname = "";
+        var direction = [];
+        var canAddTiles = false;
         if(key == 37 || key == 65){
             // left
             keyname = "left";
+            direction = [-1, 0];
+            canAddTiles = true;
         } else if(key == 38 || key == 87){
             // up
             keyname = "up";
+            direction = [0, -1];
+            canAddTiles = true;
         } else if(key == 39 || key == 68){
             // right
             keyname = "right";
+            direction = [1, 0];
+            canAddTiles = true;
         } else if(key == 40 || key == 83){
             // down
             keyname = "down";
+            direction = [0, 1];
+            canAddTiles = true;
         }
-        console.log(keyname);
+        if(move(direction)){
+            if(canAddTiles){
+                addTilesAfterTurn();
+            }
+        }
     });
 
 
