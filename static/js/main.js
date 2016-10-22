@@ -18,10 +18,10 @@ $(document).ready(function(){
     for(i = 0; i < 4; i++){
         $('#main-container').append('<tr id="row-' + i + '"></tr>');
         for(j = 0; j < 4; j++){
-            var tile = "<td class='tile' id='tile-"+ i + "-" + j +"'></td>";
+            var grid = "<td class='grid' id='grid-"+ i + "-" + j +"'></td>";
             var row = "#row-" + i;
-            $(row).append(tile);
-            $('.tile').css({'width': tile_size, 'height': tile_size});
+            $(row).append(grid);
+            $('.grid').css({'width': tile_size, 'height': tile_size});
         }
     }
 
@@ -50,7 +50,16 @@ $(document).ready(function(){
     // Return true on success
     // Return false on failure.
     function addTile(){
+        if(!gameOver()){
+            // Generate a position
+            var position = randomPosition();
+            while(!isEmpty(position)){
+                position = randomPosition();
+            }
 
+            // Grab a free tile and place it
+
+        }
     }
 
     // Returns a random grid position
