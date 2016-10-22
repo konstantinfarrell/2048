@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+    ServerName 2048.local
+    # so wildcard DNS for any IP works (see xip.io or nip.io)
+    ServerAlias 0.0.0.0.*
+
+    DocumentRoot /home/2048
+    ErrorLog /var/log/httpd/2048.local.error_log
+    CustomLog /var/log/httpd/2048.local.access_log vhost
+
+    <Directory /home/2048>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>

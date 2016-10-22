@@ -1,0 +1,12 @@
+#main-container {
+    background-color: #ccc;
+    border: 4px solid #666;
+    border-radius: 2px;
+    width: 500px;
+    height: 500px;
+    position: absolute;
+}
+
+.tile {
+    border: 3px solid #999;
+}
