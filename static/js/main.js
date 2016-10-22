@@ -64,7 +64,12 @@ $(document).ready(function(){
     // tile1 becomes free and is
     // removed from the grid.
     function merge(tile1, tile2){
-        
+        tile2.value += tile1.value;
+        tile1.free = true;
+        tile1.position = [-1,-1];
+        $(tile1.id).fadeOut(10);
+        $(tile2.id).css('background-color', setColor(tile2.value));
+        $(tile2.id).text(tile2.value);
     }
 
     // Gets a tile object based on the given
@@ -106,19 +111,35 @@ $(document).ready(function(){
         var new_position = [position[0] + direction[0], position[1] + direction[1]];
         var new_coordinates = getCoordinates(new_position);
         if(isEmpty(new_position)){
+            // Just shift the tile
             GRID[TILES[tile].position[0]][TILES[tile].position[1]] = 0;
             TILES[tile].position = new_position;
             TILES[tile].coordinates = new_coordinates;
             GRID[new_position[0]][new_position[1]] = TILES[tile];
-            return $(TILES[tile].id).animate({
-                'margin-left': new_coordinates[0] + 4 + "px",
-                'margin-top': new_coordinates[1] + 4 + "px"
-            }, 125).promise().done(function(){
-                return true;
-            });
         } else {
-            return false;
+            try {
+                var old_tile = TILES[tile];
+                var new_tile = GRID[new_position[0]][new_position[1]];
+                if(old_tile.value == new_tile.value){
+                    // Merge the tile
+                    GRID[TILES[tile].position[0]][TILES[tile].position[1]] = 0;
+                    TILES[tile].position = new_position;
+                    TILES[tile].coordinates = new_coordinates;
+                    GRID[new_position[0]][new_position[1]] = TILES[tile];
+                    merge(TILES[tile], GRID[new_position[0]][new_position[1]]);
+                } else {
+                    return false;
+                }
+            } catch(TypeError) {
+                return false;
+            }
         }
+        return $(TILES[tile].id).animate({
+            'margin-left': new_coordinates[0] + 4 + "px",
+            'margin-top': new_coordinates[1] + 4 + "px"
+        }, 125).promise().done(function(){
+            return true;
+        });
     }
 
     // Attempt to add a tile.
@@ -155,6 +176,7 @@ $(document).ready(function(){
                 'padding-top': tile_size/2 - 32 + "px"
             });
             $(TILES[tile].id).text(TILES[tile].value);
+            $(TILES[tile].id).fadeIn(10);
         }
     }
 
