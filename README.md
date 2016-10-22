@@ -14,3 +14,6 @@ Then restart the service.
     cp 2048.conf.example /etc/httpd/vhost.d/2048.conf
     systemctl restart httpd
 
+## Run
+
+Open a web browser and navigate to `0.0.0.0:80`
