@@ -35,7 +35,7 @@ $(document).ready(function(){
     // Moves all tiles in a specified direction
     // returns false if all tiles are unable to move
     // in the specified direction.
-    function move(){
+    function move(direction){
 
     }
 
