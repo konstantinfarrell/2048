@@ -37,9 +37,9 @@ $(document).ready(function(){
             html: "<div class='tile' id='tile-"+ i +"'></div>",
             id: "#tile-" + i
         };
+        $('#tile-container').append(TILES[i].html);
+        $(TILES[i].id).css('visibility', 'none');
     }
-
-    var moving = false;
 
     // Place the grid container
     var middle = $(window).width()/2;
@@ -67,7 +67,7 @@ $(document).ready(function(){
         tile2.value += tile1.value;
         tile1.free = true;
         tile1.position = [-1,-1];
-        $(tile1.id).fadeOut(10);
+        $(tile1.id).css('visibility', 'none');
         $(tile2.id).css('background-color', setColor(tile2.value));
         $(tile2.id).text(tile2.value);
     }
@@ -88,7 +88,6 @@ $(document).ready(function(){
     // returns false if all tiles are unable to move
     // in the specified direction.
     var move = function(direction){
-        moving = true;
         var can_move = 16;
         while(can_move){
             can_move = 16;
@@ -98,7 +97,6 @@ $(document).ready(function(){
                 }
             }
         }
-        moving = false;
         if(!can_move){
             return true;
         }
@@ -117,16 +115,16 @@ $(document).ready(function(){
             TILES[tile].coordinates = new_coordinates;
             GRID[new_position[0]][new_position[1]] = TILES[tile];
         } else {
+            // Merge the tile
             try {
                 var old_tile = TILES[tile];
                 var new_tile = GRID[new_position[0]][new_position[1]];
                 if(old_tile.value == new_tile.value){
-                    // Merge the tile
+                    merge(old_tile, new_tile);
                     GRID[TILES[tile].position[0]][TILES[tile].position[1]] = 0;
                     TILES[tile].position = new_position;
                     TILES[tile].coordinates = new_coordinates;
                     GRID[new_position[0]][new_position[1]] = TILES[tile];
-                    merge(TILES[tile], GRID[new_position[0]][new_position[1]]);
                 } else {
                     return false;
                 }
@@ -161,7 +159,7 @@ $(document).ready(function(){
             TILES[tile].color = setColor(value);
             TILES[tile].free = false;
 
-            $("#tile-container").append(TILES[tile].html);
+            $(TILES[tile].id).html(TILES[tile].html);
             $(TILES[tile].id).css('background-color', TILES[tile].color);
             var coordinates = getCoordinates(TILES[tile].position);
             TILES[tile].coordinates = coordinates;
@@ -176,7 +174,7 @@ $(document).ready(function(){
                 'padding-top': tile_size/2 - 32 + "px"
             });
             $(TILES[tile].id).text(TILES[tile].value);
-            $(TILES[tile].id).fadeIn(10);
+
         }
     }
 
@@ -200,7 +198,6 @@ $(document).ready(function(){
         }
         return tile;
     }
-
 
     // Returns a free position for the tile
     function findPositionForTile(){
@@ -247,12 +244,8 @@ $(document).ready(function(){
     }
 
     function addTilesAfterTurn(){
-        if(moving == true){
-            setTimeout(addTilesAfterTurn(), 250);
-        } else {
-            addTile();
-            addTile();
-        }
+        addTile();
+        addTile();
     }
 
     $(document).keydown(function(e){
