@@ -2,6 +2,8 @@
 
 An html5/javascript/jquery implementation of the game 2048.
 
+DISCLAIMER: This is by no means complete. Its currently so glitchy it shouldn't even be up on github.
+
 ## Install
 
 Just edit this apache vhost config file and you're good to go.
